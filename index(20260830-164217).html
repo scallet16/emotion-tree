@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>오늘 내 마음 감정나무</title>
+<style>
+:root{
+  --ink:#334155; --muted:#718096; --line:#dcecf4; --card:#ffffffef;
+  --shadow:0 14px 34px rgba(57,79,104,.13);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;font-family:"Pretendard","Noto Sans KR",system-ui,sans-serif;color:var(--ink)}
+body{
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 8% 10%,#fff 0 4%,transparent 5%),
+    radial-gradient(circle at 88% 12%,#fff 0 4%,transparent 5%),
+    linear-gradient(180deg,#eaf9ff 0%,#fff5fb 56%,#f8fff1 100%);
+}
+button,textarea{font:inherit}
+button{cursor:pointer;border:0;color:inherit;touch-action:manipulation;user-select:none}
+.app{max-width:1200px;margin:0 auto;padding:14px}
+.top{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+  background:var(--card);border:3px solid white;border-radius:28px;padding:14px 18px;box-shadow:var(--shadow);
+  position:relative;z-index:20
+}
+.brand{font-size:clamp(24px,3vw,38px);font-weight:950;letter-spacing:-1.5px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;position:relative;z-index:21}
+.softBtn{
+  min-height:48px;padding:10px 15px;border-radius:18px;background:#f8fcff;border:2px solid var(--line);font-weight:900;
+  position:relative;z-index:22;pointer-events:auto
+}
+.softBtn:active{transform:scale(.97)}
+.resetBtn{background:#fff7e8;border-color:#ffe0a3}
+.layout{display:grid;grid-template-columns:1fr 1.15fr;gap:15px;margin-top:15px}
+.card{background:var(--card);border:3px solid #fff;border-radius:30px;padding:18px;box-shadow:var(--shadow)}
+h2{font-size:clamp(22px,2.6vw,32px);margin:0 0 6px;letter-spacing:-1px}
+.sub{font-size:clamp(14px,1.9vw,18px);font-weight:750;color:var(--muted);margin:0 0 14px;line-height:1.45}
+.balloonGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.balloon{
+  min-height:108px;border-radius:28px;border:3px solid #fff;box-shadow:0 8px 0 rgba(64,82,105,.07);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;position:relative;overflow:hidden;
+  transition:transform .12s ease
+}
+.balloon:active{transform:scale(.95)}
+.balloon:before{
+  content:"";position:absolute;width:64%;height:38%;top:7%;left:12%;border-radius:50%;
+  background:linear-gradient(180deg,rgba(255,255,255,.78),rgba(255,255,255,.04));transform:rotate(-13deg)
+}
+.balloon .emo{font-size:40px;z-index:1}.balloon .txt{font-size:16px;font-weight:950;z-index:1}
+.c1{background:#ffd86f}.c2{background:#ffacd2}.c3{background:#94e5c9}.c4{background:#87d7fb}.c5{background:#c7b8ff}
+.c6{background:#ff9e7e}.c7{background:#92e2f2}.c8{background:#ffb5b9}.c9{background:#dacdff}.c10{background:#bfe8a8}
+.feedback{
+  margin-top:12px;min-height:64px;padding:12px 14px;border-radius:20px;background:#fff9d9;border:3px solid #ffe99f;
+  display:flex;align-items:center;justify-content:center;text-align:center;font-size:18px;font-weight:900;line-height:1.4
+}
+.treeWrap{position:relative;min-height:570px;overflow:hidden}
+.count{
+  position:absolute;left:50%;top:6px;transform:translateX(-50%);z-index:5;background:#fff;border:2px solid #dff0e2;border-radius:18px;
+  padding:8px 13px;font-size:17px;font-weight:950
+}
+.ground{position:absolute;bottom:12px;left:7%;width:86%;height:96px;background:#bce990;border-radius:50%;box-shadow:inset 0 -14px 0 #a4da78}
+.trunk{position:absolute;bottom:70px;left:50%;transform:translateX(-50%);width:94px;height:230px;background:#b87748;border-radius:46px 46px 25px 25px;box-shadow:inset -16px 0 #9c6038}
+.crown{position:absolute;left:4%;right:4%;top:48px;height:400px}
+.leaf{position:absolute;background:#85dc7e;border-radius:50%;box-shadow:inset 0 -14px 0 rgba(45,132,58,.12)}
+.l1{width:55%;height:61%;left:0;top:23%}.l2{width:56%;height:66%;right:0;top:18%}.l3{width:62%;height:65%;left:19%;top:3%}
+.empty{
+  position:absolute;z-index:2;left:50%;top:49%;transform:translate(-50%,-50%);width:75%;text-align:center;color:#54705e;font-weight:950;font-size:21px
+}
+.fruits{position:absolute;inset:0;z-index:4}
+.fruit{
+  position:absolute;width:68px;height:68px;border-radius:50%;background:#fff;border:4px solid #fff;box-shadow:0 7px 16px rgba(35,75,66,.22);
+  display:flex;align-items:center;justify-content:center;font-size:40px
+}
+.fruit:active{transform:scale(.94)}
+.rx{
+  position:absolute;width:30px;height:30px;border-radius:50%;background:#fff;border:2px solid #fff;box-shadow:0 3px 8px rgba(50,70,90,.2);
+  display:flex;align-items:center;justify-content:center;font-size:20px;pointer-events:none
+}
+.modalBack{
+  position:fixed;inset:0;background:rgba(26,41,59,.42);display:none;align-items:center;justify-content:center;
+  padding:14px;z-index:1000
+}
+.modalBack.show{display:flex}
+.modal{
+  width:min(760px,100%);max-height:92vh;overflow:auto;background:white;border-radius:30px;padding:20px;border:4px solid #fff;
+  box-shadow:0 25px 70px rgba(20,30,45,.28)
+}
+.modalHead{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.modalTitle{font-size:27px;font-weight:950}.close{width:44px;height:44px;border-radius:50%;background:#f5f9fc;border:2px solid var(--line);font-size:20px}
+.guide{margin:12px 0;padding:13px 15px;border-radius:20px;background:#fff8d9;border:3px solid #ffe496;font-size:17px;font-weight:850;line-height:1.5}
+.label{font-weight:950;font-size:18px;margin:12px 0 8px}
+.exampleGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+.example{
+  min-height:84px;border-radius:20px;background:#f8fdff;border:3px solid #e3f0f5;padding:12px;text-align:left;
+  display:flex;align-items:center;gap:10px
+}
+.example .icon{font-size:34px}.example .phrase{font-size:15px;font-weight:850;line-height:1.35}
+.palette{display:grid;grid-template-columns:repeat(8,1fr);gap:7px;background:#f7fbfd;border:2px solid #e3edf2;border-radius:20px;padding:10px}
+.pick{aspect-ratio:1;border-radius:15px;background:#fff;border:2px solid #e3edf2;font-size:29px;display:flex;align-items:center;justify-content:center}
+.pick.selected{border:4px solid #7bd9ce;background:#edfffb;transform:scale(1.05)}
+.selectedRow{margin-top:12px;display:flex;align-items:center;gap:10px;background:#fffdf3;border:3px solid #ffe6a1;border-radius:20px;padding:12px}
+.selectedBox{width:56px;height:56px;border-radius:17px;background:#fff;border:2px solid #eee2b9;display:flex;align-items:center;justify-content:center;font-size:34px}
+.selectedText{font-weight:950;line-height:1.35}
+.optionalBtn{width:100%;margin-top:12px;min-height:50px;border-radius:18px;background:#f8fbff;border:3px solid #dbeaf2;font-weight:950}
+.optionalPanel{display:none;margin-top:10px;padding:12px;border-radius:20px;background:#f8fbff;border:2px solid #deedf4}
+.optionalPanel.show{display:block}
+.modeTabs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.modeBtn{min-height:48px;border-radius:16px;background:#fff;border:2px solid #dceaf2;font-weight:950}
+.modeBtn.active{background:#ebfffb;border:3px solid #7ad8ce}
+.modeContent{margin-top:10px}
+.textArea{
+  width:100%;min-height:92px;border-radius:17px;border:3px solid #dbeaf2;padding:12px 13px;resize:vertical;
+  font-size:17px;font-weight:750;color:var(--ink);outline:none;background:#fff
+}
+.textArea:focus{border-color:#83d9cf}
+.hint{margin-top:7px;font-size:14px;color:var(--muted);font-weight:750;line-height:1.4}
+.recordBox{padding:12px;border-radius:18px;background:#fff;border:2px solid #e3edf3}
+.recordBtns{display:flex;gap:8px;flex-wrap:wrap}
+.recordBtn{flex:1;min-width:130px;min-height:46px;border-radius:15px;background:#fff7df;border:2px solid #ffe09a;font-weight:950}
+.recordBtn.recording{background:#ffe8e8;border-color:#ffb4b4}
+.audioPreview{width:100%;margin-top:10px}
+.primary{
+  width:100%;margin-top:12px;min-height:52px;border-radius:18px;background:linear-gradient(135deg,#a6eadb,#8edcf8);
+  font-weight:950;font-size:18px
+}
+.attached{margin-top:14px;border-top:2px dashed #d8e8ef;padding-top:12px}
+.attachedItem{padding:9px 11px;margin:7px 0;border-radius:15px;background:#f8fbff;border:2px solid #e3eef3;font-weight:850}
+.attachedTop{display:flex;align-items:center;gap:9px}
+.attachedTop .i{font-size:25px}
+.attachedText{margin-top:7px;padding-left:34px;color:#536273;line-height:1.45}
+.attachedAudio{width:100%;margin-top:8px}
+.confirmModal{width:min(420px,100%);text-align:center}
+.confirmEmoji{font-size:54px}.confirmTitle{font-size:25px;font-weight:950;margin:7px 0}.confirmText{font-weight:800;color:var(--muted);line-height:1.5}
+.confirmBtns{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:16px}
+.cancelBtn,.dangerBtn{min-height:50px;border-radius:17px;font-weight:950}
+.cancelBtn{background:#f4f8fb;border:2px solid #dbe8ef}.dangerBtn{background:#ffe7e7;border:2px solid #ffbebe;color:#9b3030}
+@media(max-width:800px){
+  .layout{grid-template-columns:1fr}.treeCard{order:2}.pickCard{order:1}.treeWrap{min-height:520px}
+}
+@media(max-width:520px){
+  .app{padding:9px}.top{border-radius:22px;padding:12px}.brand{font-size:24px}.softBtn{min-height:46px;padding:9px 12px}
+  .card{padding:13px;border-radius:23px}.balloonGrid{gap:7px}.balloon{min-height:93px;border-radius:22px}.balloon .emo{font-size:32px}.balloon .txt{font-size:13px}
+  .treeWrap{min-height:500px}.fruit{width:58px;height:58px;font-size:34px}.rx{width:26px;height:26px;font-size:17px}
+  .exampleGrid{grid-template-columns:1fr}.palette{grid-template-columns:repeat(6,1fr)}.pick{font-size:26px}
+  .modal{padding:15px;border-radius:24px}.modalTitle{font-size:22px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="brand">🎈 오늘 내 마음 감정나무</div>
+    <div class="actions">
+      <button type="button" class="softBtn" id="undoBtn">↩ 하나 지우기</button>
+      <button type="button" class="softBtn resetBtn" id="resetBtn">🌱 새로 시작</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="card pickCard">
+      <h2>내 기분 풍선을 골라요</h2>
+      <p class="sub">지금 내 마음과 가장 가까운 풍선을 톡! 터뜨려 보세요.</p>
+      <div class="balloonGrid" id="balloonGrid"></div>
+      <div class="feedback" id="feedback">풍선을 고르면 감정 열매가 나무에 달려요 🌳</div>
+    </section>
+
+    <section class="card treeCard">
+      <h2>🌳 우리 마음 감정나무</h2>
+      <p class="sub">나무에는 감정 열매와 친구들이 붙인 처방 이모지만 보여요. 열매를 누르면 자세한 처방을 볼 수 있어요.</p>
+      <div class="treeWrap">
+        <div class="count" id="count">0개의 마음 열매</div>
+        <div class="ground"></div><div class="trunk"></div>
+        <div class="crown">
+          <div class="leaf l1"></div><div class="leaf l2"></div><div class="leaf l3"></div>
+          <div class="empty" id="empty">첫 번째 마음 열매를 달아볼까요? 🍎</div>
+          <div class="fruits" id="fruits"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- 마음 처방 모달 -->
+<div class="modalBack" id="modalBack">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="modalHead">
+      <div class="modalTitle" id="modalTitle">마음 처방</div>
+      <button type="button" class="close" id="closeBtn">✕</button>
+    </div>
+
+    <div class="guide">
+      친구의 마음을 잘 살펴보고 <b>처방 이모지 하나는 꼭</b> 골라주세요.
+      예시는 참고만 하고, 같은 이모지도 내 생각대로 다르게 처방해도 좋아요. 글이나 녹음을 하지 않으면 선택한 이모지의 예시 문장이 자동으로 처방에 들어가요.
+    </div>
+
+    <div class="label">💡 이런 처방도 있어요</div>
+    <div class="exampleGrid" id="exampleGrid"></div>
+
+    <div class="label">🎨 내가 고르는 처방 이모지</div>
+    <div class="palette" id="palette"></div>
+
+    <div class="selectedRow">
+      <div class="selectedBox" id="selectedBox">❔</div>
+      <div class="selectedText" id="selectedText">친구에게 어울리는 처방 이모지를 골라주세요.</div>
+    </div>
+
+    <button type="button" class="optionalBtn" id="optionalBtn">➕ 선택활동 · 내가 직접 처방 만들기</button>
+
+    <div class="optionalPanel" id="optionalPanel">
+      <div class="modeTabs">
+        <button type="button" class="modeBtn active" data-mode="text">✏️ 문장 처방</button>
+        <button type="button" class="modeBtn" data-mode="record">🎤 목소리 처방</button>
+      </div>
+
+      <div class="modeContent" id="textMode">
+        <textarea id="customText" class="textArea" placeholder="예: 네 마음이 조금 편해질 때까지 내가 옆에 있어줄게."></textarea>
+        <div class="hint">예시와 달라도 괜찮아요. 이 이모지를 보고 떠오른 내 생각을 직접 써주세요.</div>
+      </div>
+
+      <div class="modeContent" id="recordMode" style="display:none">
+        <div class="recordBox">
+          <div class="recordBtns">
+            <button type="button" class="recordBtn" id="recordBtn">🎙️ 녹음 시작</button>
+            <button type="button" class="recordBtn" id="clearRecordBtn">🗑️ 녹음 지우기</button>
+          </div>
+          <div class="hint">아이의 목소리로 자유롭게 처방을 말해보세요. 녹음하지 않고 이모지만 붙여도 됩니다.</div>
+          <audio id="audioPreview" class="audioPreview" controls style="display:none"></audio>
+        </div>
+      </div>
+    </div>
+
+    <button type="button" class="primary" id="attachBtn">처방 이모지 붙이기 ✨</button>
+
+    <div class="attached">
+      <div class="label">💌 이 열매에 붙은 마음 처방</div>
+      <div id="attachedList" class="sub" style="margin:0">아직 처방 스티커가 없어요.</div>
+    </div>
+  </div>
+</div>
+
+<!-- 새로 시작 확인 모달 -->
+<div class="modalBack" id="resetModal">
+  <div class="modal confirmModal">
+    <div class="confirmEmoji">🌱</div>
+    <div class="confirmTitle">새로운 감정나무를 시작할까요?</div>
+    <div class="confirmText">지금 나무의 감정 열매와 처방 스티커가 모두 지워집니다.</div>
+    <div class="confirmBtns">
+      <button type="button" class="cancelBtn" id="resetCancel">아니요</button>
+      <button type="button" class="dangerBtn" id="resetConfirm">네, 새로 시작</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY="emotionTreeFinal_v2";
+
+const emotions=[
+ {id:"happy",emo:"😊",label:"행복해요",cls:"c1",msg:"행복한 마음이 반짝반짝 빛나고 있네요!",
+  ex:[["☀️","네가 행복해서 나도 행복해!"],["🌈","좋은 마음이 오래오래 이어지면 좋겠어."],["👏","행복을 나눠줘서 고마워!"]]},
+ {id:"excited",emo:"😁",label:"신나요",cls:"c2",msg:"신나는 에너지가 가득해요!",
+  ex:[["🎉","신나는 마음을 마음껏 즐겨보자!"],["🎵","네 신나는 기분이 나에게도 전해져!"],["🙌","하이파이브! 같이 신나자!"]]},
+ {id:"love",emo:"😍",label:"설레요",cls:"c3",msg:"두근두근 설레는 마음이네요!",
+  ex:[["💗","두근두근한 마음을 소중히 간직해!"],["🌷","네 마음에 예쁜 꽃이 핀 것 같아."],["✨","설레는 순간을 마음껏 느껴봐!"]]},
+ {id:"calm",emo:"😌",label:"편안해요",cls:"c4",msg:"마음이 포근하고 편안하군요.",
+  ex:[["☁️","편안한 마음이 참 좋아 보여."],["🍃","이 편안함을 천천히 느껴봐."],["🫖","따뜻하게 쉬어가도 좋아."]]},
+ {id:"sad",emo:"😢",label:"슬퍼요",cls:"c5",msg:"슬픈 마음도 소중한 내 마음이에요.",
+  ex:[["🫂","말하고 싶을 때 내가 옆에 있어줄게."],["🧸","많이 슬펐겠다. 천천히 괜찮아져도 돼."],["🌤️","구름 뒤 햇살처럼 마음이 조금 가벼워지길 바라."]]},
+ {id:"angry",emo:"😡",label:"화나요",cls:"c6",msg:"화난 마음도 이유가 있는 소중한 마음이에요.",
+  ex:[["🔥","그건 정말 화날 만해. 나도 네 편에서 같이 화내줄게!"],["🩹","상처 난 마음에 반창고를 붙여줄게."],["🧊","마음이 너무 뜨거우면 잠깐 식혀보자."],["💬","화난 이유를 천천히 말로 표현해보자."]]},
+ {id:"upset",emo:"🥺",label:"속상해요",cls:"c7",msg:"속상한 마음을 잘 찾아냈어요.",
+  ex:[["🩹","속상한 마음에 반창고를 붙여줄게."],["🤝","필요하면 내가 같이 있어줄게."],["💌","네 마음을 알아주는 친구가 여기 있어."]]},
+ {id:"afraid",emo:"😰",label:"무서워요",cls:"c8",msg:"무서운 마음이 있군요. 혼자 견디지 않아도 돼요.",
+  ex:[["🔦","무서울 때 내가 옆을 밝혀줄게."],["🛡️","걱정될 때 네 마음을 지켜줄게."],["🤝","손잡고 천천히 해보자."]]},
+ {id:"tired",emo:"😴",label:"피곤해요",cls:"c9",msg:"몸과 마음이 쉬고 싶다고 말하고 있네요.",
+  ex:[["🛏️","조금 쉬어도 괜찮아."],["🥤","물 한 모금 마시고 힘을 채워보자."],["🔋","에너지를 천천히 충전하자!"]]},
+ {id:"worried",emo:"😟",label:"걱정돼요",cls:"c10",msg:"걱정되는 마음을 알아차렸네요.",
+  ex:[["🧭","어떻게 할지 같이 길을 찾아보자."],["🤲","혼자 고민하지 말고 나눠도 좋아."],["🍀","좋은 일이 생기길 내가 응원할게."]]},
+ {id:"bored",emo:"😑",label:"지루해요",cls:"c4",msg:"지루한 마음도 지금 내 마음을 알려주는 신호예요.",
+  ex:[["🎲","같이 재미있는 걸 하나 찾아보자!"],["🎨","새로운 걸 하나 해보면 어떨까?"],["🚶","잠깐 움직이면 기분이 달라질 수도 있어."],["💡","네가 하고 싶은 걸 하나 골라보자."]]},
+ {id:"lonely",emo:"🥺",label:"외로워요",cls:"c7",msg:"외로운 마음이 있군요. 누군가와 연결되고 싶은 마음일 수 있어요.",
+  ex:[["🤝","내가 같이 있어줄게."],["👋","내가 먼저 말 걸어줄게."],["🫂","혼자라고 느껴질 때 꼭 안아줄게."],["🎲","우리 같이 놀자!"],["👂","네 이야기를 천천히 들어줄게."]]}
+];
+
+const paletteItems=[
+ ["☀️","네 마음이 환해지도록 햇빛을 줄게."],["🌈","오늘 마음에도 무지개가 떴으면 좋겠어."],["⭐","넌 충분히 빛나는 친구야."],["✨","좋은 일이 조금씩 생기길 바라."],
+ ["💗","따뜻한 마음을 보내줄게."],["🫶","네 마음을 소중하게 안아줄게."],["🫂","힘들면 내가 꼭 안아줄게."],["🤝","필요하면 내가 함께할게."],
+ ["🩹","아픈 마음에 반창고를 붙여줄게."],["💊","마음이 조금 나아지는 약을 선물할게."],["🧸","토닥토닥 쉬어도 괜찮아."],["🛏️","오늘은 조금 푹 쉬어도 좋아."],
+ ["🥤","시원한 물 한 모금 마셔보자."],["🍵","따뜻한 차처럼 마음이 편해지길 바라."],["🌬️","후~ 숨을 길게 내쉬어보자."],["🍃","마음이 산들바람처럼 가벼워지길 바라."],
+ ["☁️","포근한 구름 위에서 잠깐 쉬어가자."],["🌤️","구름 뒤에 햇살이 기다리고 있어."],["🌱","천천히 다시 힘이 자라날 거야."],["🌷","네 마음에 예쁜 꽃이 피길 바라."],
+ ["🔦","무서울 때 내가 옆을 밝혀줄게."],["🛡️","걱정될 때 마음을 지켜줄게."],["🧭","길을 모르겠으면 같이 찾아보자."],["🚦","잠깐 멈추고 천천히 생각해보자."],
+ ["🧊","뜨거운 마음을 잠깐 시원하게 식혀보자."],["🫧","답답한 마음을 보글보글 날려보자."],["🎈","무거운 마음을 풍선처럼 가볍게 띄워보자."],["🔋","에너지를 천천히 충전해보자."],
+ ["🎵","좋아하는 노래를 들으며 기분을 바꿔보자."],["🎧","잠깐 음악을 들으며 마음을 쉬게 해보자."],["🎨","그림으로 마음을 표현해봐도 좋아."],["📖","조용히 책을 보며 마음을 쉬게 해보자."],
+ ["⚽","몸을 움직이며 답답한 마음을 풀어보자."],["🧩","천천히 하나씩 맞춰가면 돼."],["🎁","오늘 너에게 작은 기쁨을 선물할게."],["🍀","좋은 일이 찾아오길 응원할게."],
+ ["🔥","그건 정말 화날 만해. 나도 네 편에서 같이 화내줄게!"],["💬","하고 싶은 말을 천천히 말해도 좋아."],["👂","네 이야기를 내가 들어줄게."],["💪","네가 해낼 수 있도록 힘을 보내줄게."],
+ ["❤️‍🩹","마음이 다 나을 때까지 천천히 기다려줄게."],["🌊","답답한 마음이 파도처럼 흘러가면 좋겠어."],["🌙","오늘은 편안하게 쉬었으면 좋겠어."],["🐻","든든하게 네 곁에 있어줄게."]
+];
+
+let entries=[];
+try{
+  entries=JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]");
+}catch(e){entries=[];}
+entries=Array.isArray(entries)?entries.map(x=>({...x,rx:Array.isArray(x.rx)?x.rx:[]})):[];
+let currentId=null;
+let selectedEmoji="";
+let selectedPhrase="";
+let customAudioData="";
+let recorder=null;
+let chunks=[];
+
+const $=id=>document.getElementById(id);
+const balloonGrid=$("balloonGrid"), fruits=$("fruits"), feedback=$("feedback"), count=$("count"), empty=$("empty");
+const modalBack=$("modalBack"), modalTitle=$("modalTitle"), exampleGrid=$("exampleGrid"), palette=$("palette");
+const selectedBox=$("selectedBox"), selectedText=$("selectedText"), attachedList=$("attachedList");
+const optionalPanel=$("optionalPanel"), customText=$("customText"), recordBtn=$("recordBtn"), clearRecordBtn=$("clearRecordBtn"), audioPreview=$("audioPreview");
+const resetModal=$("resetModal");
+
+function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(entries));}
+function uid(){return crypto.randomUUID?crypto.randomUUID():Date.now()+"_"+Math.random().toString(36).slice(2);}
+
+emotions.forEach(e=>{
+  const b=document.createElement("button");
+  b.type="button";
+  b.className=`balloon ${e.cls}`;
+  b.innerHTML=`<span class="emo">${e.emo}</span><span class="txt">${e.label}</span>`;
+  b.addEventListener("click",()=>{
+    entries.push({id:uid(),emotion:e.id,rx:[],time:Date.now()});
+    save();
+    feedback.textContent=`${e.emo} ${e.msg}`;
+    render();
+  });
+  balloonGrid.appendChild(b);
+});
+
+function pos(i){
+  const cols=5,row=Math.floor(i/cols),col=i%cols;
+  return {x:7+col*19+(row%2?5:0),y:10+row*20};
+}
+function render(){
+  fruits.innerHTML="";
+  entries.forEach((en,i)=>{
+    const e=emotions.find(x=>x.id===en.emotion)||emotions[0];
+    const p=pos(i);
+    const f=document.createElement("button");
+    f.type="button";
+    f.className="fruit";
+    f.style.left=Math.min(p.x,84)+"%";
+    f.style.top=Math.min(p.y,76)+"%";
+    f.textContent=e.emo;
+    f.addEventListener("click",()=>openModal(en.id));
+    fruits.appendChild(f);
+
+    (en.rx||[]).slice(0,4).forEach((r,idx)=>{
+      const s=document.createElement("span");
+      s.className="rx";
+      s.textContent=r.emoji;
+      const o=[[-8,-10],[45,-10],[-8,46],[46,46]][idx];
+      s.style.left=o[0]+"px";
+      s.style.top=o[1]+"px";
+      f.appendChild(s);
+    });
+
+    if((en.rx||[]).length>4){
+      const s=document.createElement("span");
+      s.className="rx";
+      s.textContent="+"+(en.rx.length-4);
+      s.style.left="20px";
+      s.style.top="53px";
+      s.style.fontSize="11px";
+      f.appendChild(s);
+    }
+  });
+  count.textContent=`${entries.length}개의 마음 열매`;
+  empty.style.display=entries.length?"none":"block";
+}
+
+function choose(emoji,phrase){
+  selectedEmoji=emoji;
+  selectedPhrase=phrase;
+  selectedBox.textContent=emoji;
+  selectedText.textContent=phrase;
+  [...document.querySelectorAll(".pick")].forEach(b=>b.classList.toggle("selected",b.dataset.e===emoji));
+}
+function renderPalette(){
+  palette.innerHTML="";
+  paletteItems.forEach(([emoji,phrase])=>{
+    const b=document.createElement("button");
+    b.type="button";
+    b.className="pick";
+    b.textContent=emoji;
+    b.dataset.e=emoji;
+    b.title=phrase;
+    b.addEventListener("click",()=>choose(emoji,phrase));
+    palette.appendChild(b);
+  });
+}
+function resetOptionalInputs(){
+  customText.value="";
+  customAudioData="";
+  audioPreview.pause();
+  audioPreview.removeAttribute("src");
+  audioPreview.style.display="none";
+  recordBtn.textContent="🎙️ 녹음 시작";
+  recordBtn.classList.remove("recording");
+}
+function openModal(id){
+  currentId=id;
+  selectedEmoji="";
+  selectedPhrase="";
+  selectedBox.textContent="❔";
+  selectedText.textContent="친구에게 어울리는 처방 이모지를 골라주세요.";
+  optionalPanel.classList.remove("show");
+  resetOptionalInputs();
+
+  const en=entries.find(x=>x.id===id);
+  const e=emotions.find(x=>x.id===en.emotion)||emotions[0];
+  modalTitle.textContent=`${e.emo} ${e.label} 마음 열매`;
+
+  exampleGrid.innerHTML="";
+  e.ex.forEach(([emoji,phrase])=>{
+    const b=document.createElement("button");
+    b.type="button";
+    b.className="example";
+    b.innerHTML=`<span class="icon">${emoji}</span><span class="phrase">“${phrase}”</span>`;
+    b.addEventListener("click",()=>choose(emoji,phrase));
+    exampleGrid.appendChild(b);
+  });
+
+  renderPalette();
+  renderAttached(en);
+  modalBack.classList.add("show");
+}
+function renderAttached(en){
+  attachedList.innerHTML="";
+  if(!en.rx.length){
+    attachedList.textContent="아직 처방 스티커가 없어요.";
+    return;
+  }
+
+  en.rx.forEach(r=>{
+    const d=document.createElement("div");
+    d.className="attachedItem";
+
+    const top=document.createElement("div");
+    top.className="attachedTop";
+    top.innerHTML=`<span class="i">${r.emoji}</span><span>마음 처방</span>`;
+    d.appendChild(top);
+
+    if(r.text){
+      const t=document.createElement("div");
+      t.className="attachedText";
+      t.textContent="✏️ "+r.text;
+      d.appendChild(t);
+    }
+
+    if(r.audio){
+      const au=document.createElement("audio");
+      au.className="attachedAudio";
+      au.controls=true;
+      au.src=r.audio;
+      d.appendChild(au);
+    }
+
+    attachedList.appendChild(d);
+  });
+}
+
+$("optionalBtn").addEventListener("click",()=>optionalPanel.classList.toggle("show"));
+
+document.querySelectorAll(".modeBtn").forEach(b=>{
+  b.addEventListener("click",()=>{
+    const mode=b.dataset.mode;
+    document.querySelectorAll(".modeBtn").forEach(x=>x.classList.toggle("active",x===b));
+    $("textMode").style.display=mode==="text"?"block":"none";
+    $("recordMode").style.display=mode==="record"?"block":"none";
+  });
+});
+
+recordBtn.addEventListener("click",async()=>{
+  try{
+    if(recorder && recorder.state==="recording"){
+      recorder.stop();
+      return;
+    }
+
+    if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+      alert("이 브라우저에서는 녹음을 사용할 수 없어요. 인터넷 주소(https)로 열면 더 안정적으로 사용할 수 있습니다.");
+      return;
+    }
+
+    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    chunks=[];
+    recorder=new MediaRecorder(stream);
+
+    recorder.ondataavailable=e=>{
+      if(e.data.size>0) chunks.push(e.data);
+    };
+
+    recorder.onstop=()=>{
+      const blob=new Blob(chunks,{type:recorder.mimeType||"audio/webm"});
+      const reader=new FileReader();
+      reader.onloadend=()=>{
+        customAudioData=reader.result;
+        audioPreview.src=customAudioData;
+        audioPreview.style.display="block";
+      };
+      reader.readAsDataURL(blob);
+      stream.getTracks().forEach(t=>t.stop());
+      recordBtn.textContent="🎙️ 다시 녹음";
+      recordBtn.classList.remove("recording");
+    };
+
+    recorder.start();
+    recordBtn.textContent="⏹ 녹음 끝내기";
+    recordBtn.classList.add("recording");
+  }catch(err){
+    alert("마이크 권한이 허용되지 않았어요. 브라우저에서 마이크 권한을 허용해 주세요.");
+  }
+});
+
+clearRecordBtn.addEventListener("click",()=>{
+  if(recorder && recorder.state==="recording"){
+    recorder.stop();
+  }
+  customAudioData="";
+  audioPreview.pause();
+  audioPreview.removeAttribute("src");
+  audioPreview.style.display="none";
+  recordBtn.textContent="🎙️ 녹음 시작";
+  recordBtn.classList.remove("recording");
+});
+
+$("attachBtn").addEventListener("click",()=>{
+  if(!selectedEmoji){
+    alert("처방 이모지를 꼭 하나 골라주세요.");
+    return;
+  }
+
+  const en=entries.find(x=>x.id===currentId);
+  if(!en)return;
+
+  const ownText=customText.value.trim();
+
+  const finalText = ownText || (!customAudioData ? selectedPhrase : "");
+
+  en.rx.push({
+    emoji:selectedEmoji,
+    example:selectedPhrase,
+    text:finalText,
+    audio:customAudioData||"",
+    time:Date.now()
+  });
+
+  save();
+  render();
+  renderAttached(en);
+
+  feedback.textContent=finalText
+    ? `${selectedEmoji} “${finalText}”`
+    : `${selectedEmoji} 마음 처방 스티커를 붙였어요!`;
+
+  selectedEmoji="";
+  selectedPhrase="";
+  selectedBox.textContent="❔";
+  selectedText.textContent="또 다른 처방 이모지를 골라도 좋아요.";
+  resetOptionalInputs();
+  renderPalette();
+});
+
+$("closeBtn").addEventListener("click",()=>modalBack.classList.remove("show"));
+modalBack.addEventListener("click",e=>{if(e.target===modalBack)modalBack.classList.remove("show");});
+
+$("undoBtn").addEventListener("click",()=>{
+  if(!entries.length){
+    feedback.textContent="지울 마음 열매가 없어요.";
+    return;
+  }
+  entries.pop();
+  save();
+  feedback.textContent="마지막 마음 열매를 하나 지웠어요.";
+  render();
+});
+
+/* 새로 시작: 브라우저 confirm 대신 앱 내부 모달 사용 */
+$("resetBtn").addEventListener("click",()=>{
+  resetModal.classList.add("show");
+});
+$("resetCancel").addEventListener("click",()=>{
+  resetModal.classList.remove("show");
+});
+$("resetConfirm").addEventListener("click",()=>{
+  entries=[];
+  try{localStorage.removeItem(STORAGE_KEY);}catch(e){}
+  save();
+  currentId=null;
+  selectedEmoji="";
+  selectedPhrase="";
+  resetOptionalInputs();
+  modalBack.classList.remove("show");
+  resetModal.classList.remove("show");
+  feedback.textContent="새로운 감정나무를 시작해요 🌱";
+  render();
+});
+resetModal.addEventListener("click",e=>{
+  if(e.target===resetModal)resetModal.classList.remove("show");
+});
+
+render();
+</script>
+</body>
+</html>
