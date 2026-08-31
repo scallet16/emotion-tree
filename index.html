@@ -308,6 +308,58 @@ h2{font-size:clamp(22px,2.6vw,32px);margin:0 0 6px;letter-spacing:-1px}
   }
 }
 
+
+  .offlinePrintPage{
+    position:relative;
+  }
+
+  .offlinePrintPage::before{
+    content:"";
+    position:absolute;
+    top:0;
+    bottom:0;
+    left:50%;
+    border-left:.45mm dashed #777;
+    transform:translateX(-.225mm);
+    z-index:20;
+    pointer-events:none;
+  }
+
+  .offlinePrintPage::after{
+    content:"";
+    position:absolute;
+    left:0;
+    right:0;
+    top:50%;
+    border-top:.45mm dashed #777;
+    transform:translateY(-.225mm);
+    z-index:20;
+    pointer-events:none;
+  }
+
+  .cutMark{
+    position:absolute;
+    z-index:25;
+    font-size:11pt;
+    line-height:1;
+    color:#555;
+    background:#fff;
+    padding:0 1.2mm;
+    font-family:"Arial","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  }
+
+  .cutMarkTop{
+    top:2mm;
+    left:50%;
+    transform:translateX(-50%);
+  }
+
+  .cutMarkLeft{
+    top:50%;
+    left:2mm;
+    transform:translateY(-50%);
+  }
+
 </style>
 </head>
 <body>
@@ -802,6 +854,8 @@ render();
 
 <div id="offlinePrintSheet" aria-hidden="true">
   <div class="offlinePrintPage">
+    <div class="cutMark cutMarkTop">✂</div>
+    <div class="cutMark cutMarkLeft">✂</div>
 
     <div class="offlineCard">
       <div class="ocHeader">
