@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>오늘 내 마음 감정나무</title>
+<title>감정 처방 연구소</title>
 <style>
 :root{
   --ink:#334155; --muted:#718096; --line:#dcecf4; --card:#ffffffef;
@@ -147,13 +147,190 @@ h2{font-size:clamp(22px,2.6vw,32px);margin:0 0 6px;letter-spacing:-1px}
   .exampleGrid{grid-template-columns:1fr}.palette{grid-template-columns:repeat(6,1fr)}.pick{font-size:26px}
   .modal{padding:15px;border-radius:24px}.modalTitle{font-size:22px}
 }
+
+.makerCredit{
+  text-align:center;
+  margin-top:4px;
+  padding-bottom:2px;
+  font-size:10px;
+  line-height:1.2;
+  font-weight:700;
+  color:#8793a3;
+  opacity:.9;
+  letter-spacing:.2px;
+}
+@media(max-width:520px){
+  .makerCredit{font-size:9px;margin-top:3px}
+}
+
+
+#offlinePrintSheet{display:none}
+
+@media print{
+  @page{
+    size:A4 portrait;
+    margin:0;
+  }
+
+  html,body{
+    width:210mm !important;
+    height:297mm !important;
+    margin:0 !important;
+    padding:0 !important;
+    background:#fff !important;
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+  }
+
+  body > *:not(#offlinePrintSheet){
+    display:none !important;
+  }
+
+  #offlinePrintSheet{
+    display:block !important;
+    width:210mm !important;
+    height:297mm !important;
+    margin:0 !important;
+    padding:0 !important;
+  }
+
+  .offlinePrintPage{
+    width:210mm;
+    height:297mm;
+    display:grid;
+    grid-template-columns:105mm 105mm;
+    grid-template-rows:148.5mm 148.5mm;
+    box-sizing:border-box;
+  }
+
+  .offlineCard{
+    width:105mm;
+    height:148.5mm;
+    box-sizing:border-box;
+    padding:6.5mm 7mm 6mm;
+    border-right:.35mm dashed #8b8b8b;
+    border-bottom:.35mm dashed #8b8b8b;
+    overflow:hidden;
+    font-family:"Arial","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+    color:#222;
+    background:#fff;
+    display:flex;
+    flex-direction:column;
+  }
+
+  .offlineCard:nth-child(2n){border-right:none}
+  .offlineCard:nth-child(n+3){border-bottom:none}
+
+  .ocHeader{
+    text-align:center;
+    margin-bottom:3mm;
+  }
+
+  .ocLab{
+    font-size:15pt;
+    line-height:1.1;
+    font-weight:900;
+    letter-spacing:-.5px;
+  }
+
+  .ocMini{
+    margin-top:1.2mm;
+    font-size:8.4pt;
+    font-weight:700;
+    color:#555;
+  }
+
+  .ocName{
+    font-size:10.5pt;
+    font-weight:800;
+    margin-bottom:2.5mm;
+  }
+
+  .nameLine{
+    display:inline-block;
+    width:57mm;
+    height:4mm;
+    margin-left:2mm;
+    border-bottom:.35mm solid #444;
+    vertical-align:bottom;
+  }
+
+  .ocTitle{
+    font-size:11.5pt;
+    font-weight:900;
+    margin-bottom:1.5mm;
+  }
+
+  .ocEmotionArea{
+    height:39mm;
+    border:.45mm solid #555;
+    border-radius:2.5mm;
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-sizing:border-box;
+  }
+
+  .ocRxTitle{
+    margin-top:3mm;
+  }
+
+  .ocRxArea{
+    flex:1;
+    min-height:48mm;
+    border:.45mm solid #555;
+    border-radius:2.5mm;
+    position:relative;
+    box-sizing:border-box;
+    padding:5mm;
+  }
+
+  .ocGuide{
+    text-align:center;
+    color:#aaa;
+    font-size:8pt;
+    line-height:1.35;
+  }
+
+  .writeLines{
+    position:absolute;
+    left:5mm;
+    right:5mm;
+    bottom:5mm;
+  }
+
+  .writeLines span{
+    display:block;
+    height:7mm;
+    border-bottom:.25mm solid #bbb;
+  }
+}
+
 </style>
 </head>
 <body>
 <div class="app">
   <header class="top">
-    <div class="brand">🎈 오늘 내 마음 감정나무</div>
+    <div>
+      <div class="brand">🧪 감정 처방 연구소</div>
+      <div style="font-weight:900;color:#64748b;margin-top:3px">
+        세상엔 나쁜 감정은 없어요. 나는 감정 전문가 처방전을 줄게요!
+      </div>
+      <div id="editableIntro" contenteditable="true" spellcheck="false"
+           style="margin-top:6px;font-size:13px;font-weight:750;color:#8a94a6;
+                  padding:6px 8px;border-radius:10px;outline:none;min-width:260px;
+                  border:1px dashed transparent;"
+           onfocus="this.style.borderColor='#cbd5e1';this.style.background='#ffffffaa'"
+           onblur="this.style.borderColor='transparent';this.style.background='transparent'">
+        친구의 감정을 천천히 살펴보고 나만의 감정 처방을 만들어 보세요.
+      </div>
+    </div>
     <div class="actions">
+      <button type="button" class="softBtn" onclick="window.print()" 
+              style="cursor:pointer;background:#fff7ed;border-color:#fed7aa;">
+        🖨️ 오프라인 활동지 인쇄
+      </button>
       <button type="button" class="softBtn" id="undoBtn">↩ 하나 지우기</button>
       <button type="button" class="softBtn resetBtn" id="resetBtn">🌱 새로 시작</button>
     </div>
@@ -161,38 +338,39 @@ h2{font-size:clamp(22px,2.6vw,32px);margin:0 0 6px;letter-spacing:-1px}
 
   <main class="layout">
     <section class="card pickCard">
-      <h2>내 기분 풍선을 골라요</h2>
-      <p class="sub">지금 내 마음과 가장 가까운 풍선을 톡! 터뜨려 보세요.</p>
+      <h2>오늘의 감정을 골라요</h2>
+      <p class="sub">지금 나의 감정과 가장 가까운 풍선을 톡! 골라보세요.</p>
       <div class="balloonGrid" id="balloonGrid"></div>
-      <div class="feedback" id="feedback">풍선을 고르면 감정 열매가 나무에 달려요 🌳</div>
+      <div class="feedback" id="feedback">세상에 나쁜 감정은 없어요. 감정을 고르면 나무에 열매가 달려요 🌳</div>
     </section>
 
     <section class="card treeCard">
-      <h2>🌳 우리 마음 감정나무</h2>
-      <p class="sub">나무에는 감정 열매와 친구들이 붙인 처방 이모지만 보여요. 열매를 누르면 자세한 처방을 볼 수 있어요.</p>
+      <h2>🌳 우리의 감정나무</h2>
+      <p class="sub">나는 감정 전문가! 내 감정을 제대로 알고 친구의 감정에 어울리는 처방을 만들어 보세요.</p>
       <div class="treeWrap">
-        <div class="count" id="count">0개의 마음 열매</div>
+        <div class="count" id="count">0개의 감정 열매</div>
         <div class="ground"></div><div class="trunk"></div>
         <div class="crown">
           <div class="leaf l1"></div><div class="leaf l2"></div><div class="leaf l3"></div>
-          <div class="empty" id="empty">첫 번째 마음 열매를 달아볼까요? 🍎</div>
+          <div class="empty" id="empty">첫 번째 감정 열매를 달아볼까요? 🍎</div>
           <div class="fruits" id="fruits"></div>
         </div>
       </div>
+      <div class="makerCredit">수다쟁이 여니쌤 제작</div>
     </section>
   </main>
 </div>
 
-<!-- 마음 처방 모달 -->
+<!-- 감정 처방 모달 -->
 <div class="modalBack" id="modalBack">
   <div class="modal" role="dialog" aria-modal="true">
     <div class="modalHead">
-      <div class="modalTitle" id="modalTitle">마음 처방</div>
+      <div class="modalTitle" id="modalTitle">감정 처방</div>
       <button type="button" class="close" id="closeBtn">✕</button>
     </div>
 
     <div class="guide">
-      친구의 마음을 잘 살펴보고 <b>처방 이모지 하나는 꼭</b> 골라주세요.
+      친구의 감정을 잘 살펴보고 <b>처방 이모지 하나는 꼭</b> 골라주세요.
       예시는 참고만 하고, 같은 이모지도 내 생각대로 다르게 처방해도 좋아요. 글이나 녹음을 하지 않으면 선택한 이모지의 예시 문장이 자동으로 처방에 들어가요.
     </div>
 
@@ -235,7 +413,7 @@ h2{font-size:clamp(22px,2.6vw,32px);margin:0 0 6px;letter-spacing:-1px}
     <button type="button" class="primary" id="attachBtn">처방 이모지 붙이기 ✨</button>
 
     <div class="attached">
-      <div class="label">💌 이 열매에 붙은 마음 처방</div>
+      <div class="label">💌 이 열매에 붙은 감정 처방</div>
       <div id="attachedList" class="sub" style="margin:0">아직 처방 스티커가 없어요.</div>
     </div>
   </div>
@@ -255,32 +433,32 @@ h2{font-size:clamp(22px,2.6vw,32px);margin:0 0 6px;letter-spacing:-1px}
 </div>
 
 <script>
-const STORAGE_KEY="emotionTreeFinal_v2";
+const STORAGE_KEY="emotionTreeFinal_v5";
 
 const emotions=[
- {id:"happy",emo:"😊",label:"행복해요",cls:"c1",msg:"행복한 마음이 반짝반짝 빛나고 있네요!",
+ {id:"happy",emo:"😊",label:"행복해요",cls:"c1",msg:"행복한 감정이 반짝반짝 빛나고 있네요!",
   ex:[["☀️","네가 행복해서 나도 행복해!"],["🌈","좋은 마음이 오래오래 이어지면 좋겠어."],["👏","행복을 나눠줘서 고마워!"]]},
  {id:"excited",emo:"😁",label:"신나요",cls:"c2",msg:"신나는 에너지가 가득해요!",
   ex:[["🎉","신나는 마음을 마음껏 즐겨보자!"],["🎵","네 신나는 기분이 나에게도 전해져!"],["🙌","하이파이브! 같이 신나자!"]]},
- {id:"love",emo:"😍",label:"설레요",cls:"c3",msg:"두근두근 설레는 마음이네요!",
+ {id:"love",emo:"😍",label:"설레요",cls:"c3",msg:"두근두근 설레는 감정이네요!",
   ex:[["💗","두근두근한 마음을 소중히 간직해!"],["🌷","네 마음에 예쁜 꽃이 핀 것 같아."],["✨","설레는 순간을 마음껏 느껴봐!"]]},
- {id:"calm",emo:"😌",label:"편안해요",cls:"c4",msg:"마음이 포근하고 편안하군요.",
+ {id:"calm",emo:"😌",label:"편안해요",cls:"c4",msg:"편안한 감정이 느껴지는군요.",
   ex:[["☁️","편안한 마음이 참 좋아 보여."],["🍃","이 편안함을 천천히 느껴봐."],["🫖","따뜻하게 쉬어가도 좋아."]]},
- {id:"sad",emo:"😢",label:"슬퍼요",cls:"c5",msg:"슬픈 마음도 소중한 내 마음이에요.",
-  ex:[["🫂","말하고 싶을 때 내가 옆에 있어줄게."],["🧸","많이 슬펐겠다. 천천히 괜찮아져도 돼."],["🌤️","구름 뒤 햇살처럼 마음이 조금 가벼워지길 바라."]]},
- {id:"angry",emo:"😡",label:"화나요",cls:"c6",msg:"화난 마음도 이유가 있는 소중한 마음이에요.",
-  ex:[["🔥","그건 정말 화날 만해. 나도 네 편에서 같이 화내줄게!"],["🩹","상처 난 마음에 반창고를 붙여줄게."],["🧊","마음이 너무 뜨거우면 잠깐 식혀보자."],["💬","화난 이유를 천천히 말로 표현해보자."]]},
- {id:"upset",emo:"🥺",label:"속상해요",cls:"c7",msg:"속상한 마음을 잘 찾아냈어요.",
-  ex:[["🩹","속상한 마음에 반창고를 붙여줄게."],["🤝","필요하면 내가 같이 있어줄게."],["💌","네 마음을 알아주는 친구가 여기 있어."]]},
- {id:"afraid",emo:"😰",label:"무서워요",cls:"c8",msg:"무서운 마음이 있군요. 혼자 견디지 않아도 돼요.",
-  ex:[["🔦","무서울 때 내가 옆을 밝혀줄게."],["🛡️","걱정될 때 네 마음을 지켜줄게."],["🤝","손잡고 천천히 해보자."]]},
- {id:"tired",emo:"😴",label:"피곤해요",cls:"c9",msg:"몸과 마음이 쉬고 싶다고 말하고 있네요.",
+ {id:"proud",emo:"😎",label:"뿌듯해요",cls:"c1",msg:"해낸 나를 보며 뿌듯한 감정이 느껴지는군요!",
+  ex:[["🏆","정말 잘했어! 네가 해낸 걸 함께 축하할게."],["👏","네가 노력한 만큼 마음껏 뿌듯해해도 좋아!"],["⭐","오늘의 멋진 너를 기억해두자!"]]},
+ {id:"grateful",emo:"🥰",label:"고마워요",cls:"c3",msg:"고마운 감정이 따뜻하게 피어나고 있네요!",
+  ex:[["💌","고마운 감정을 그 사람에게 전해보자."],["🫶","따뜻한 고마움을 오래 간직해보자."],["🌷","고마운 사람에게 작은 친절을 돌려줘도 좋아."]]},
+ {id:"tired",emo:"😴",label:"피곤해요",cls:"c9",msg:"피곤한 감정을 잘 알아차렸네요.",
   ex:[["🛏️","조금 쉬어도 괜찮아."],["🥤","물 한 모금 마시고 힘을 채워보자."],["🔋","에너지를 천천히 충전하자!"]]},
- {id:"worried",emo:"😟",label:"걱정돼요",cls:"c10",msg:"걱정되는 마음을 알아차렸네요.",
+ {id:"worried",emo:"😟",label:"걱정돼요",cls:"c10",msg:"걱정되는 감정을 알아차렸네요.",
   ex:[["🧭","어떻게 할지 같이 길을 찾아보자."],["🤲","혼자 고민하지 말고 나눠도 좋아."],["🍀","좋은 일이 생기길 내가 응원할게."]]},
- {id:"bored",emo:"😑",label:"지루해요",cls:"c4",msg:"지루한 마음도 지금 내 마음을 알려주는 신호예요.",
+ {id:"angry",emo:"😡",label:"화나요",cls:"c6",msg:"화난 감정도 이유가 있는 소중한 감정이에요.",
+  ex:[["🔥","그건 정말 화날 만해. 나도 네 편에서 같이 화내줄게!"],["🩹","상처 난 마음에 반창고를 붙여줄게."],["🧊","마음이 너무 뜨거우면 잠깐 식혀보자."],["💬","화난 이유를 천천히 말로 표현해보자."]]},
+ {id:"upset",emo:"🥺",label:"속상해요",cls:"c7",msg:"속상한 감정을 잘 알아차렸어요.",
+  ex:[["🩹","속상한 마음에 반창고를 붙여줄게."],["🤝","필요하면 내가 같이 있어줄게."],["💌","네 마음을 알아주는 친구가 여기 있어."]]},
+ {id:"bored",emo:"😑",label:"지루해요",cls:"c4",msg:"지루한 감정도 지금 나를 알려주는 중요한 신호예요.",
   ex:[["🎲","같이 재미있는 걸 하나 찾아보자!"],["🎨","새로운 걸 하나 해보면 어떨까?"],["🚶","잠깐 움직이면 기분이 달라질 수도 있어."],["💡","네가 하고 싶은 걸 하나 골라보자."]]},
- {id:"lonely",emo:"🥺",label:"외로워요",cls:"c7",msg:"외로운 마음이 있군요. 누군가와 연결되고 싶은 마음일 수 있어요.",
+ {id:"lonely",emo:"🥺",label:"외로워요",cls:"c7",msg:"외로운 감정이 있군요. 누군가와 연결되고 싶다는 신호일 수 있어요.",
   ex:[["🤝","내가 같이 있어줄게."],["👋","내가 먼저 말 걸어줄게."],["🫂","혼자라고 느껴질 때 꼭 안아줄게."],["🎲","우리 같이 놀자!"],["👂","네 이야기를 천천히 들어줄게."]]}
 ];
 
@@ -372,7 +550,7 @@ function render(){
       f.appendChild(s);
     }
   });
-  count.textContent=`${entries.length}개의 마음 열매`;
+  count.textContent=`${entries.length}개의 감정 열매`;
   empty.style.display=entries.length?"none":"block";
 }
 
@@ -416,7 +594,7 @@ function openModal(id){
 
   const en=entries.find(x=>x.id===id);
   const e=emotions.find(x=>x.id===en.emotion)||emotions[0];
-  modalTitle.textContent=`${e.emo} ${e.label} 마음 열매`;
+  modalTitle.textContent=`${e.emo} ${e.label} 감정 열매`;
 
   exampleGrid.innerHTML="";
   e.ex.forEach(([emoji,phrase])=>{
@@ -445,7 +623,7 @@ function renderAttached(en){
 
     const top=document.createElement("div");
     top.className="attachedTop";
-    top.innerHTML=`<span class="i">${r.emoji}</span><span>마음 처방</span>`;
+    top.innerHTML=`<span class="i">${r.emoji}</span><span>감정 처방</span>`;
     d.appendChild(top);
 
     if(r.text){
@@ -559,7 +737,7 @@ $("attachBtn").addEventListener("click",()=>{
 
   feedback.textContent=finalText
     ? `${selectedEmoji} “${finalText}”`
-    : `${selectedEmoji} 마음 처방 스티커를 붙였어요!`;
+    : `${selectedEmoji} 감정 처방 스티커를 붙였어요!`;
 
   selectedEmoji="";
   selectedPhrase="";
@@ -574,12 +752,12 @@ modalBack.addEventListener("click",e=>{if(e.target===modalBack)modalBack.classLi
 
 $("undoBtn").addEventListener("click",()=>{
   if(!entries.length){
-    feedback.textContent="지울 마음 열매가 없어요.";
+    feedback.textContent="지울 감정 열매가 없어요.";
     return;
   }
   entries.pop();
   save();
-  feedback.textContent="마지막 마음 열매를 하나 지웠어요.";
+  feedback.textContent="마지막 감정 열매를 하나 지웠어요.";
   render();
 });
 
@@ -607,7 +785,113 @@ resetModal.addEventListener("click",e=>{
   if(e.target===resetModal)resetModal.classList.remove("show");
 });
 
+
+const editableIntroStorage="emotionTreeEditableIntro";
+const editableIntro=document.getElementById("editableIntro");
+if(editableIntro){
+  const savedIntro=localStorage.getItem(editableIntroStorage);
+  if(savedIntro) editableIntro.textContent=savedIntro;
+  editableIntro.addEventListener("input",()=>{
+    localStorage.setItem(editableIntroStorage, editableIntro.textContent.trim());
+  });
+}
+
 render();
 </script>
+
+<div id="offlinePrintSheet" aria-hidden="true">
+  <div class="offlinePrintPage">
+
+    <div class="offlineCard">
+      <div class="ocHeader">
+        <div class="ocLab">🧪 감정처방 연구소</div>
+        <div class="ocMini">오늘의 내 감정 · 친구의 감정 처방</div>
+      </div>
+
+      <div class="ocName">이름 <span class="nameLine"></span></div>
+
+      <div class="ocTitle">오늘의 내 감정</div>
+      <div class="ocEmotionArea">
+        <div class="ocGuide">내 감정을 이모지나 그림으로 표현해 보세요.</div>
+      </div>
+
+      <div class="ocTitle ocRxTitle">친구의 감정 처방전</div>
+      <div class="ocRxArea">
+        <div class="ocGuide">친구에게 주고 싶은 처방을 그림이나 글로 표현해 보세요.</div>
+        <div class="writeLines">
+          <span></span><span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="offlineCard">
+      <div class="ocHeader">
+        <div class="ocLab">🧪 감정처방 연구소</div>
+        <div class="ocMini">오늘의 내 감정 · 친구의 감정 처방</div>
+      </div>
+
+      <div class="ocName">이름 <span class="nameLine"></span></div>
+
+      <div class="ocTitle">오늘의 내 감정</div>
+      <div class="ocEmotionArea">
+        <div class="ocGuide">내 감정을 이모지나 그림으로 표현해 보세요.</div>
+      </div>
+
+      <div class="ocTitle ocRxTitle">친구의 감정 처방전</div>
+      <div class="ocRxArea">
+        <div class="ocGuide">친구에게 주고 싶은 처방을 그림이나 글로 표현해 보세요.</div>
+        <div class="writeLines">
+          <span></span><span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="offlineCard">
+      <div class="ocHeader">
+        <div class="ocLab">🧪 감정처방 연구소</div>
+        <div class="ocMini">오늘의 내 감정 · 친구의 감정 처방</div>
+      </div>
+
+      <div class="ocName">이름 <span class="nameLine"></span></div>
+
+      <div class="ocTitle">오늘의 내 감정</div>
+      <div class="ocEmotionArea">
+        <div class="ocGuide">내 감정을 이모지나 그림으로 표현해 보세요.</div>
+      </div>
+
+      <div class="ocTitle ocRxTitle">친구의 감정 처방전</div>
+      <div class="ocRxArea">
+        <div class="ocGuide">친구에게 주고 싶은 처방을 그림이나 글로 표현해 보세요.</div>
+        <div class="writeLines">
+          <span></span><span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="offlineCard">
+      <div class="ocHeader">
+        <div class="ocLab">🧪 감정처방 연구소</div>
+        <div class="ocMini">오늘의 내 감정 · 친구의 감정 처방</div>
+      </div>
+
+      <div class="ocName">이름 <span class="nameLine"></span></div>
+
+      <div class="ocTitle">오늘의 내 감정</div>
+      <div class="ocEmotionArea">
+        <div class="ocGuide">내 감정을 이모지나 그림으로 표현해 보세요.</div>
+      </div>
+
+      <div class="ocTitle ocRxTitle">친구의 감정 처방전</div>
+      <div class="ocRxArea">
+        <div class="ocGuide">친구에게 주고 싶은 처방을 그림이나 글로 표현해 보세요.</div>
+        <div class="writeLines">
+          <span></span><span></span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 </body>
 </html>
